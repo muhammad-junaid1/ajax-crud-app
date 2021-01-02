@@ -3,9 +3,15 @@
     
     require "config.php";
 
-    $query = $_GET["query"];
+    $query = explode(" ", $_GET["query"]);
+    $search_words = array();
+    foreach($query as $word) {
+        if(!empty($word)) {
+            $search_words[] = "first_name LIKE '%$word%' OR last_name LIKE '%$word%'";
+        }
+    }
     $output = "";
-    $sql = "SELECT * FROM users WHERE first_name LIKE '%$query%' OR last_name LIKE '%$query%'";
+    $sql = "SELECT * FROM users WHERE " . implode(" OR ", $search_words);
     $result = mysqli_query($conn, $sql);
 
     if($result) {
